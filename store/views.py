@@ -5,12 +5,12 @@ import json
 import datetime
 from .utils import cookieCart, cartData, guestOrder
 
-# Create your views here.
-
+# view for store.html
 def store(request):
     data = cartData(request)
     cartItems = data['cartItems']
    
+   # show all products
     products = Product.objects.all()
     context = {
         'products': products,
@@ -19,7 +19,7 @@ def store(request):
     }
     return render(request, 'store/store.html', context)
 
-
+# view for cart.html
 def cart(request):
     data = cartData(request)
     cartItems = data['cartItems']
@@ -33,7 +33,7 @@ def cart(request):
     }
     return render(request, 'store/cart.html', context)
 
-
+# view for checkout.html
 def checkout(request):
     data = cartData(request)
     cartItems = data['cartItems']
@@ -47,14 +47,11 @@ def checkout(request):
     }
     return render(request, 'store/checkout.html', context)
 
-
+# updates the item count on the cart.html
 def updateItem(request):
     data = json.loads(request.body)
     productId = data['productId']
     action = data['action']
-
-    print('Action:', action)
-    print('Product:', productId)
 
     customer = request.user.customer
     product = Product.objects.get(id=productId)
@@ -73,7 +70,7 @@ def updateItem(request):
 
     return JsonResponse('Item was added', safe=False)
 
-
+# processes the order as a logged in user or as a guest
 def processOrder(request):
     transaction_id = datetime.datetime.now().timestamp()
     data = json.loads(request.body)

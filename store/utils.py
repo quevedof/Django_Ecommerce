@@ -1,6 +1,7 @@
 import json
 from .models import *
 
+# gets data from cookies if user is not logged in
 def cookieCart(request):
     try:
         cart = json.loads(request.COOKIES['cart'])
@@ -46,7 +47,8 @@ def cookieCart(request):
             pass
     return {'cartItems': cartItems, 'order': order, 'items': items}
 
-
+# returns cart data from db if the user is logged in
+# else, uses cookies for cart data for guest users
 def cartData(request):
     if request.user.is_authenticated:
         customer = request.user.customer
@@ -62,7 +64,7 @@ def cartData(request):
         items = cookieData['items']
     return {'cartItems': cartItems, 'order': order, 'items': items}
 
-
+# order creation for guest users
 def guestOrder(request, data):
     print('User is not logged in')
 
