@@ -5,6 +5,13 @@ import json
 import datetime
 from .utils import cookieCart, cartData, guestOrder
 
+# view for login.html
+def login(request):
+    context = {}
+    return render(request,'store/login.html', context)
+
+
+
 # view for store.html
 def store(request):
     data = cartData(request)
