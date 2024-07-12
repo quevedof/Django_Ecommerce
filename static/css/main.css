@@ -93,7 +93,38 @@ h1,h2,h3,h4,h5,h6{
 	opacity: .6;
 }
 
-
 .hidden{
 	display: none!important;
+}
+
+.login-container {
+	max-width: 400px;
+	margin: auto;
+	padding-top: 50px;
+}
+.card{
+	background-color: #F5F5F5;
+
+}
+#messages {
+	margin-top: -0.5em;
+	color: #757575;
+	letter-spacing: 1px;
+}
+
+.signup-container {
+	max-width: 500px;
+	margin: auto;
+	padding-top: 50px;
+}
+.errorList {
+	margin: auto;
+	padding-bottom: 20px;
+	color: #cc0000;
+}
+
+.hello-msg{
+	font-size: 18;
+	color: #fff;
+	margin-right: 20px;
 }
