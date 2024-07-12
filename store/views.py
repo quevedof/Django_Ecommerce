@@ -1,16 +1,65 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import *
 from django.http import JsonResponse
 import json
 import datetime
-from .utils import cookieCart, cartData, guestOrder
+from .utils import cartData, guestOrder
+from .forms import CreateUserForm
+from django.urls import reverse
+from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
+
 
 # view for login.html
-def login(request):
-    context = {}
-    return render(request,'store/login.html', context)
+def loginPage(request):
+    # ensure users that are logged in cannot access the login page
+    if request.user.is_authenticated:
+        return redirect('store')
+    else:
+        if request.method == 'POST':
+            email = request.POST.get('email')
+            password = request.POST.get('password')
+            # use the email given to get the username and login
+            # allows the login of user using their email
+            username = User.objects.get(email=email.lower()).username
+            user = authenticate(username=username, password=password)
+
+            if user is not None:
+                login(request, user)
+                return redirect('store')
+            else:
+                messages.info(request, 'Username OR password is incorrect.')
 
 
+        context = {}
+        return render(request,'store/login.html', context)
+
+def logoutUser(request):
+    logout(request)
+    return redirect('login')
+
+# view for signup.html
+def signup(request):
+    # ensure users that are logged in cannot access the sign up page
+    if request.user.is_authenticated:
+        return redirect('store')
+    else:
+        # if data is submitted, create a new user form
+        if request.method == 'POST':
+            form = CreateUserForm(request.POST)
+            # validate data
+            if form.is_valid():
+                new_user = form.save()
+
+                Customer.objects.create(user=new_user, name=new_user.first_name, email=new_user.email)
+                # send a confirmation message to the template
+                messages.success(request, 'Account successfully created, please login.')
+                return redirect('login')
+        else:
+            form = CreateUserForm()
+
+        context = {'form': form}
+        return render(request,'store/signup.html', context)
 
 # view for store.html
 def store(request):

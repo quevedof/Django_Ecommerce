@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Signup</title>
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
 </head>
@@ -24,41 +24,57 @@
           </ul>
         </div>
     </nav>
-
+    
     <div class="container">
-        <div class="login-container">
+        <div class="signup-container">
             <div class="card">
                 <div class="card-header text-center">
-                    <h3>Login</h3>
+                    <h3>Sign Up</h3>
                 </div>
                 <div class="card-body">
-                    <form method= 'POST'>
+                    <form method="POST" action=''>
                         {% csrf_token %}
-                        
-                        <!-- confirmation message for a succesful sign up -->
-                        {% if messages %}       
-                            {% for message in messages %}  
-                                <span id='messages'>{{ message }}</span>  
-                            {% endfor %}            
-                        {% endif %}  
-
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            {{form.username}}
+                        </div>
+                        <div class="mb-3">
+                            <label for="firstName" class="form-label">First Name</label>
+                            {{form.first_name}}
+                        </div>
+                        <div class="mb-3">
+                            <label for="lastName" class="form-label">Last Name</label>
+                            {{form.last_name}}
+                        </div>
                         <div class="mb-3">
                             <label for="email" class="form-label">Email address</label>
-                            <input type="email" class="form-control" name="email" placeholder="Enter email">
+                            {{form.email}}
                         </div>
                         <div class="mb-3">
                             <label for="password" class="form-label">Password</label>
-                            <input type="password" class="form-control" name="password" placeholder="Password">
+                            {{form.password1}}
                         </div>
-                        <div class="mb-3 form-check">
-                            <input type="checkbox" class="form-check-input" id="rememberMe">
-                            <label class="form-check-label" for="rememberMe">Remember me</label>
+                        <div class="mb-3">
+                            <label for="confirmPassword" class="form-label">Repeat Password</label>
+                            {{form.password2}}
                         </div>
-                        <input type="submit" class="btn btn-primary w-100" value='Login'>
+                        
+                        <!-- display any errors raised by form creation -->
+                        <div class = "errorList">
+                            {% if form.errors %}
+                                {% for field in form %}
+                                    {% for error in field.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+
+                        <input type="submit" class="btn btn-primary w-100" value='Sign Up'>
                     </form>
                 </div>
                 <div class="card-footer text-center">
-                    <small>Don't have an account? <a href="{% url 'signup' %}">Sign up</a></small>
+                    <small>Already have an account? <a href="{% url 'login' %}">Login</a></small>
                 </div>
             </div>
         </div>
