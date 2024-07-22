@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="{% url 'store' %}">Ecom</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="{% url 'store' %}"> Store <span class="sr-only">(current)</span></a>
+            </li>
+          </ul>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <div class="order-container">
+            <div class="order-header text-center">
+                <h2>Order Confirmation</h2>
+                <p>Thank you for your purchase, <strong> {{order.customer.name}}</strong>!</p>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h4>Customer Information</h4>
+                </div>
+                {% if shipping_address %}
+                    <div class="card-body">
+                        <p><strong>Name:</strong> {{order.customer.name}} </p>
+                        <p><strong>Delivery Address:</strong> {{shipping_address.address}} </p>
+                        <p><strong>City:</strong> {{shipping_address.city}} </p>
+                        <p><strong>Zip Code:</strong> {{shipping_address.zipcode}} </p>
+                    </div>
+                <!-- orders can have only digital products, delivery address not needed -->
+                {% else %}
+                <div class="card-body">
+                    <p><strong>Name:</strong> {{order.customer.name}} </p>
+                    <p><strong>Delivery Address:</strong> N/A </p>
+                    <p><strong>City:</strong> N/A </p>
+                    <p><strong>Zip Code:</strong> N/A </p>
+                </div>
+                {% endif %}
+
+            </div>
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h4>Order Summary</h4>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Item Name</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in order_items %}
+                                <tr>
+                                    <td> {{item.product.name}} </td>
+                                    <td> {{item.quantity}} </td>
+                                    <td> ${{item.product.price|floatformat:2}} </td>
+                                    <td> ${{item.get_total}} </td>
+                                </tr>
+                            {% endfor %}
+                            <tr>
+                                <th colspan="3" class="text-end">Total</th>
+                                <th> ${{order.get_cart_total}} </th>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="text-center mt-4">
+                <a href="{% url 'store' %}"class="btn btn-info">Continue Shopping</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+</body>
+</html>
