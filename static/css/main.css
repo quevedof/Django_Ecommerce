@@ -128,3 +128,16 @@ h1,h2,h3,h4,h5,h6{
 	color: #fff;
 	margin-right: 20px;
 }
+
+.order-container {
+	max-width: 800px;
+	margin: auto;
+	margin-bottom: 20px;
+	padding-top: 30px;
+}
+.order-header {
+	background-color: #f8f9fa;
+	padding: 10px;
+	margin-bottom: 10px;
+	border-radius: 5px;
+}

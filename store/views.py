@@ -51,7 +51,7 @@ def signup(request):
             if form.is_valid():
                 new_user = form.save()
 
-                Customer.objects.create(user=new_user, name=new_user.first_name, email=new_user.email)
+                Customer.objects.create(user=new_user, name=f"{new_user.first_name} {new_user.last_name}", email=new_user.email)
                 # send a confirmation message to the template
                 messages.success(request, 'Account successfully created, please login.')
                 return redirect('login')
@@ -156,6 +156,21 @@ def processOrder(request):
             zipcode = data['shipping']['zipcode'],
         )
 
-    return JsonResponse('Payment complete', safe=False)
+    return JsonResponse(order.id, safe=False)
 
+# order confirmation view that takes the order_id as a param
+def order_confirmation(request, order_id):
 
+    order = Order.objects.get(id=order_id)
+
+    #shipping address
+    shipping_address = ShippingAddress.objects.get(customer=order.customer, order=order)
+    # order items
+    order_items = OrderItem.objects.filter(order=order)
+
+    context = {
+        "order": order,
+        "shipping_address": shipping_address,
+        "order_items": order_items
+    }
+    return render(request,'store/order_confirmation.html/', context)
