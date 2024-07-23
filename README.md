@@ -2,7 +2,7 @@
 
 Fully functional eCommerce website with user and guest checkout capabilities with client-side paypal payment integration. 
 
-Implementation of Django user registration and login authentication with use of forms.
+Implementation of Django user registration, login authentication with use of forms, and decorators for role permissions.
 
 Users and guests have the ability to add multiple products to cart, varying from physical to digital products. Guest checkout is enabled by using cookies.
 
