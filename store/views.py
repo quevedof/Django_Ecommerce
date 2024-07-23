@@ -8,58 +8,54 @@ from .forms import CreateUserForm
 from django.urls import reverse
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
+from .decorators import *
 
 
-# view for login.html
-def loginPage(request):
-    # ensure users that are logged in cannot access the login page
-    if request.user.is_authenticated:
-        return redirect('store')
-    else:
-        if request.method == 'POST':
-            email = request.POST.get('email')
-            password = request.POST.get('password')
-            # use the email given to get the username and login
-            # allows the login of user using their email
-            username = User.objects.get(email=email.lower()).username
-            user = authenticate(username=username, password=password)
+#ensure users that are logged in cannot access the login page by calling a decorator
+@unauthenticated_user
+def loginPage(request):    
+    
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        # use the email given to get the username and login
+        # allows the login of user using their email
+        username = User.objects.get(email=email.lower()).username
+        user = authenticate(username=username, password=password)
 
-            if user is not None:
-                login(request, user)
-                return redirect('store')
-            else:
-                messages.info(request, 'Username OR password is incorrect.')
+        if user is not None:
+            login(request, user)
+            return redirect('store')
+        else:
+            messages.info(request, 'Username OR password is incorrect.')
 
 
-        context = {}
-        return render(request,'store/login.html', context)
+    context = {}
+    return render(request,'store/login.html', context)
 
 def logoutUser(request):
     logout(request)
     return redirect('login')
 
 # view for signup.html
+@unauthenticated_user
 def signup(request):
-    # ensure users that are logged in cannot access the sign up page
-    if request.user.is_authenticated:
-        return redirect('store')
+    # if data is submitted, create a new user form
+    if request.method == 'POST':
+        form = CreateUserForm(request.POST)
+        # validate data
+        if form.is_valid():
+            new_user = form.save()
+
+            Customer.objects.create(user=new_user, name=f"{new_user.first_name} {new_user.last_name}", email=new_user.email)
+            # send a confirmation message to the template
+            messages.success(request, 'Account successfully created, please login.')
+            return redirect('login')
     else:
-        # if data is submitted, create a new user form
-        if request.method == 'POST':
-            form = CreateUserForm(request.POST)
-            # validate data
-            if form.is_valid():
-                new_user = form.save()
+        form = CreateUserForm()
 
-                Customer.objects.create(user=new_user, name=f"{new_user.first_name} {new_user.last_name}", email=new_user.email)
-                # send a confirmation message to the template
-                messages.success(request, 'Account successfully created, please login.')
-                return redirect('login')
-        else:
-            form = CreateUserForm()
-
-        context = {'form': form}
-        return render(request,'store/signup.html', context)
+    context = {'form': form}
+    return render(request,'store/signup.html', context)
 
 # view for store.html
 def store(request):
@@ -174,3 +170,8 @@ def order_confirmation(request, order_id):
         "order_items": order_items
     }
     return render(request,'store/order_confirmation.html/', context)
+# only admins can view the product management page
+@admin_required
+def products_management(request):
+    context={}
+    return render(request, 'store/products_management.html', context)
