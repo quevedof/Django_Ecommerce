@@ -1,4 +1,4 @@
-# Django Ecommerce Website
+# Django Ecommerce Web App
 
 Fully functional eCommerce website with user and guest checkout capabilities with client-side paypal payment integration. 
 
